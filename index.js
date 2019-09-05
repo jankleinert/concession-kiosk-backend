@@ -21,7 +21,7 @@ app.get('/ticketNumber', function(req, res, next) {
 				console.log(`There are ${n} documents`);
 				if (n > 0) {
 					var highestTicket = collection.find().sort({ticketNumber:-1}).limit(1).ticketNumber;
-					console.log("highest ticket: ") + collection.find().sort({ticketNumber:-1}).limit(1);
+					console.log("highest ticket: " + collection.find().sort({ticketNumber:-1}).limit(1)); 
 					newTicketnumber = highestTicket + 1;
 				}
 				collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
