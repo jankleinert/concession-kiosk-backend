@@ -16,14 +16,30 @@ app.get('/ticketNumber', function(req, res, next) {
 			const db = client.db(dbName);
 			const collection = db.collection('orders');
 			console.log("docs: " + collection.countDocuments({}));
-			if (collection.countDocuments({}) > 0) {
+			collection.find({}).count().then((n) => {
+
+				console.log(`There are ${n} documents`);
+				if (n > 0) {
+					var highestTicket = find().sort({ticketNumber:-1}).limit(1).ticketNumber;
+					console.log("highest ticket: ") + highestTicket;
+					newTicketnumber = highestTicket + 1;
+				}
+				collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
+					console.log('err:' + err, ' result: ' + result);
+				});
+		
+			}).catch((err) => {
+		
+				console.log(err);
+			});
+			/*if (collection.countDocuments({}) > 0) {
 				var highestTicket = find().sort({ticketNumber:-1}).limit(1).ticketNumber;
 				console.log("highest ticket: ") + highestTicket;
 				newTicketnumber = highestTicket + 1;
 			}
 			collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
 				console.log('err:' + err, ' result: ' + result);
-			});
+			});*/
 				
 		}
 	  		
