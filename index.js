@@ -10,7 +10,8 @@ app.get('/ticketNumber', function(req, res, next) {
 	let newTicketNumber = 100;
 	mongo.connect(dbConnectionUrl, (err, client) => {
 		if (err) {
-		  console.error(err)
+		  console.error(err);
+		  res.send({success: false, result: 9999});
 		} else {
 			const db = client.db(dbName);
 			const collection = db.collection('orders');
@@ -34,9 +35,8 @@ app.get('/ticketNumber', function(req, res, next) {
 					res.send({success: true, result: newTicketNumber});
 				}
 			}).catch((err) => {
-		
 				console.log(err);
-				res.send({success: false, result: newTicketNumber});
+				res.send({success: false, result: 999});
 			});	
 		} 		
 	});	
