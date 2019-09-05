@@ -7,8 +7,7 @@ const dbName = process.env.MONGODB_DBNAME || 'sampledb';
 const mongo = require('mongodb').MongoClient;
 
 app.get('/ticketNumber', function(req, res, next) {
-	let newTicketNumber= 100;
-	console.log(dbConnectionUrl);
+	let newTicketNumber = 100;
 	mongo.connect(dbConnectionUrl, (err, client) => {
 		if (err) {
 		  console.error(err)
@@ -20,58 +19,27 @@ app.get('/ticketNumber', function(req, res, next) {
 
 				console.log(`There are ${n} documents`);
 				if (n > 0) {
-					var highestTicket = collection.find().sort({ticketNumber:-1}).limit(1).ticketNumber;
-					console.log("highest ticket: " + collection.find().sort({ticketNumber:-1}).limit(1)); 
-					newTicketnumber = highestTicket + 1;
+					collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
+						let highestTicket = items[0].ticketNumber;
+						newTicketNumber = highestTicket + 1;
+						collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
+							console.log('err:' + err, ' result: ' + result);
+						});
+						res.send({success: true, result: newTicketNumber});
+					}); 
+				} else {
+					collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
+						console.log('err:' + err, ' result: ' + result);
+					});
+					res.send({success: true, result: newTicketNumber});
 				}
-				collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
-					console.log('err:' + err, ' result: ' + result);
-				});
-		
 			}).catch((err) => {
 		
 				console.log(err);
-			});
-			/*if (collection.countDocuments({}) > 0) {
-				var highestTicket = find().sort({ticketNumber:-1}).limit(1).ticketNumber;
-				console.log("highest ticket: ") + highestTicket;
-				newTicketnumber = highestTicket + 1;
-			}
-			collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
-				console.log('err:' + err, ' result: ' + result);
-			});*/
-				
-		}
-	  		
-	});
-	res.send({success: true, result: newTicketNumber});
-	
-});
-
-app.get('/initdb', function (req, res, next) {
-	var ridesList;
-	console.log(dbConnectionUrl);
-
-	mongo.connect(dbConnectionUrl, (err, client) => {
-		if (err) {
-		  console.error(err)
-		  return
-		}
-		console.log(dbConnectionUrl);
-		const db = client.db(dbName);
-		const collection = db.collection('rides');
-		collection.insertMany([{id: '123', name: 'Compile Driver', wait: 30}, {id: '234', name: 'Wild West', wait: 5}], (err, result) => {
-			console.log('err:' + err, ' result: ' + result);
-		});
-		
-
-		collection.find().toArray((err, items) => {
-			ridesList = items;
-			console.log(items);
-		});
-	  });
-	console.log(ridesList);	
-	res.send({success: true, result: ridesList});
+				res.send({success: false, result: newTicketNumber});
+			});	
+		} 		
+	});	
 });
 
 app.get('/allorders', function (req, res, next) {
