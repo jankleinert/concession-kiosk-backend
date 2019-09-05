@@ -7,7 +7,29 @@ const dbName = process.env.MONGODB_DBNAME || 'sampledb';
 const mongo = require('mongodb').MongoClient;
 
 app.get('/ticketNumber', function(req, res, next) {
-	res.send({success: true, result: 999});
+	let newTicketNumber= 100;
+	console.log(dbConnectionUrl);
+	mongo.connect(dbConnectionUrl, (err, client) => {
+		if (err) {
+		  console.error(err)
+		} else {
+			const db = client.db(dbName);
+			const collection = db.collection('orders');
+			console.log("docs: " + collection.countDocuments({}));
+			if (collection.countDocuments({}) > 0) {
+				var highestTicket = find().sort({ticketNumber:-1}).limit(1).ticketNumber;
+				console.log("highest ticket: ") + highestTicket;
+				newTicketnumber = highestTicket + 1;
+			}
+			collection.insertOne({ticketNumber: newTicketNumber, order: 'order info'}, (err, result) => {
+				console.log('err:' + err, ' result: ' + result);
+			});
+				
+		}
+	  		
+	});
+	res.send({success: true, result: newTicketNumber});
+	
 });
 
 app.get('/initdb', function (req, res, next) {
@@ -36,8 +58,8 @@ app.get('/initdb', function (req, res, next) {
 	res.send({success: true, result: ridesList});
 });
 
-app.get('/allrides/', function (req, res, next) {
-	var ridesList;
+app.get('/allorders', function (req, res, next) {
+	var ordersList;
 
 	mongo.connect(dbConnectionUrl, (err, client) => {
 		if (err) {
@@ -46,14 +68,14 @@ app.get('/allrides/', function (req, res, next) {
 		}
 		console.log(dbConnectionUrl);
 		const db = client.db(dbName);
-		const collection = db.collection('rides');
+		const collection = db.collection('orders');
 		collection.find().toArray((err, items) => {
-			ridesList = items;
+			ordersList = items;
 			console.log(items);
 		});
 	  })
-	  console.log(ridesList);		
-	res.send({success: true, result: ridesList});
+	  console.log(ordersList);		
+	res.send({success: true, result: ordersList});
 
 });
 
