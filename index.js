@@ -20,7 +20,7 @@ app.get('/ticketNumber', function(req, res, next) {
 
 				console.log(`There are ${n} documents`);
 				if (n > 0) {
-					var highestTicket = find().sort({ticketNumber:-1}).limit(1).ticketNumber;
+					var highestTicket = collection.find().sort({ticketNumber:-1}).limit(1).ticketNumber;
 					console.log("highest ticket: ") + highestTicket;
 					newTicketnumber = highestTicket + 1;
 				}
