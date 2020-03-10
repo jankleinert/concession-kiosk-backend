@@ -69,12 +69,10 @@ app.get('/allorders', function (req, res, next) {
 		const collection = db.collection('orders');
 		collection.find().toArray((err, items) => {
 			ordersList = items;
-			console.log(items);
+			console.log(ordersList);
+			res.send({success: true, result: ordersList});
 		});
-	  })
-	  console.log(ordersList);
-	res.send({success: true, result: ordersList});
-
+	});
 });
 
 app.get('/debug', function(req, res, next) {
