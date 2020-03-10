@@ -2,9 +2,25 @@ const express = require('express');
 const app = express();
 const host = process.env.IP  || '0.0.0.0';
 const port = process.env.PORT || 8080;
-const dbConnectionUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/sampledb';
-const dbName = process.env.MONGODB_DBNAME || 'sampledb';
 const mongo = require('mongodb').MongoClient;
+
+const mongoUri = process.env.uri;
+const mongoUsername = process.env.username;
+const mongoPassword = process.env.password;
+const dbName = process.env.database_name || process.env.MONGODB_DBNAME || 'sampledb';
+
+var dbConnectionUrl;
+
+// If the monogo secret has been attached, modify the provided URI to include
+// authentication credentials
+if (mongoUri) {
+	var auth = mongoUsername + ':' + mongoPassword + '@'
+	var pieces = mongoUri.split('//');
+	dbConnectionUrl = pieces[0] + '//' + auth + pieces[1] + '/' + dbName;
+}
+else {
+	dbConnectionUrl  = process.env.MONGODB_URL || 'mongodb://localhost:27017/sampledb';
+}
 
 app.get('/ticketNumber', function(req, res, next) {
 	let newTicketNumber = 100;
@@ -24,7 +40,7 @@ app.get('/ticketNumber', function(req, res, next) {
 							console.log('err:' + err, ' result: ' + result);
 						});
 						res.send({success: true, result: newTicketNumber, order: req.query});
-					}); 
+					});
 				} else {
 					collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
 						console.log('err:' + err, ' result: ' + result);
@@ -34,9 +50,9 @@ app.get('/ticketNumber', function(req, res, next) {
 			}).catch((err) => {
 				console.log(err);
 				res.send({success: false, result: 999});
-			});	
-		} 		
-	});	
+			});
+		}
+	});
 });
 
 /* for debugging purposes */
@@ -56,9 +72,28 @@ app.get('/allorders', function (req, res, next) {
 			console.log(items);
 		});
 	  })
-	  console.log(ordersList);		
+	  console.log(ordersList);
 	res.send({success: true, result: ordersList});
 
+});
+
+app.get('/debug', function(req, res, next) {
+
+	var details = {
+		"mongo_url": dbConnectionUrl,
+		"connected": false
+	};
+
+	mongo.connect(dbConnectionUrl, (err, client) => {
+		if (err) {
+			console.error(err)
+		} else {
+			console.log('Connected to Mongo')
+			details["connected"] = true;
+			console.log("Updated details")
+		}
+		res.send(details);
+	});
 });
 
 app.use(function(err, req, res, next) {
