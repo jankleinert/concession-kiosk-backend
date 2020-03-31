@@ -5,9 +5,13 @@ const port = process.env.PORT || 8080;
 const mongo = require('mongodb').MongoClient;
 
 const mongoUri = process.env.uri;
-const mongoUsername = process.env.username;
-const mongoPassword = process.env.password;
-const dbName = process.env.database_name || process.env.MONGODB_DBNAME || 'sampledb';
+const mongoUsername = process.env.username || process.env.MONGODB_USER;
+const mongoPassword = process.env.password || process.env.MONGODB_PASSWORD;
+const dbName = process.env.database_name || 
+			   process.env.MONGODB_DBNAME || 
+			   process.env.MONGDOB_DATABASE ||
+			   'sampledb';
+const dbServiceName = process.env.DATABASE_SERVICE_NAME || 'localhost';
 
 var dbConnectionUrl;
 
@@ -18,8 +22,13 @@ if (mongoUri) {
 	var pieces = mongoUri.split('//');
 	dbConnectionUrl = pieces[0] + '//' + auth + pieces[1] + '/' + dbName;
 }
-else {
-	dbConnectionUrl  = process.env.MONGODB_URL || 'mongodb://localhost:27017/sampledb';
+else if (process.env.MONGODB_URL){
+	dbConnectionUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/sampledb';
+} else {
+	dbConnectionUrl = 'mongodb://' mongoUsername + ':' + 
+					mongoPassword + '@' + 
+					dbServiceName + ':27017/' 
+					+ dbName;
 }
 
 app.get('/ticketNumber', function(req, res, next) {
