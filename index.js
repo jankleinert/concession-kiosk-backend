@@ -9,7 +9,7 @@ const mongoUsername = process.env.username || process.env.MONGODB_USER;
 const mongoPassword = process.env.password || process.env.MONGODB_PASSWORD;
 const dbName = process.env.database_name || 
 			   process.env.MONGODB_DBNAME || 
-			   process.env.MONGDOB_DATABASE ||
+			   process.env.MONGODB_DATABASE ||
 			   'sampledb';
 const dbServiceName = process.env.DATABASE_SERVICE_NAME || 'localhost';
 
