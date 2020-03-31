@@ -25,7 +25,10 @@ if (mongoUri) {
 else if (process.env.MONGODB_URL){
 	dbConnectionUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/sampledb';
 } else {
-	dbConnectionUrl = 'mongodb://' + dbServiceName + ':27017/' + dbName;
+	dbConnectionUrl = 'mongodb://' + mongoUsername + ':' + 
+					mongoPassword + '@' + 
+					dbServiceName + ':27017/' 
+					+ dbName;
 }
 
 app.get('/ticketNumber', function(req, res, next) {
