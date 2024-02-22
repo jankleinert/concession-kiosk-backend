@@ -14,6 +14,16 @@ const dbName = process.env.database_name ||
 			   process.env.MONGODB_DATABASE ||
 			   'sampledb';
 const dbServiceName = process.env.DATABASE_SERVICE_NAME || 'localhost';
+console.log("mongoUri");
+console.log(mongoUri);
+console.log("mongoUsername");
+console.log(mongoUsername);
+console.log("mongoPassword");
+console.log(mongoPassword);
+console.log("dbName");
+console.log(dbName);
+console.log("dbServiceName");
+console.log(dbServiceName);
 
 var dbConnectionUrl;
 
