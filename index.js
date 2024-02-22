@@ -42,8 +42,8 @@ else if (process.env.MONGODB_URL){
 					dbServiceName + ':27017/' 
 					+ dbName;
 }
-console.log("dbServiceName");
-console.log(dbServiceName);
+console.log("dbConnectionUrl");
+console.log(dbConnectionUrl);
 
 app.get('/ticketNumber', function(req, res, next) {
 	let newTicketNumber = 100;
