@@ -108,6 +108,7 @@ app.get('/debug', function(req, res, next) {
   console.log(details);
 
 	mongo.connect(dbConnectionUrl, (err, client) => {
+    console.log("start")
 		if (err) {
 			console.error(err)
 		} else {
