@@ -118,6 +118,8 @@ app.get('/debug', function(req, res, next) {
 		}
 		res.send(details);
 	});
+  console.log("ended");
+  res.send({end: true});
 });
 
 app.get('/', function(req, res, next) {
