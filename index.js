@@ -41,7 +41,7 @@ app.get('/ticketNumber', function(req, res, next) {
       const database = client.db(dbName);
       const collection = await database.collection('orders');
 
-			collection.find({}).count().then((n) => {
+			await collection.find({}).count().then((n) => {
 				if (n > 0) {
 					collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
 						let highestTicket = items[0].ticketNumber;
