@@ -35,14 +35,15 @@ else if (process.env.MONGODB_URL){
 }
 
 app.get('/ticketNumber', function(req, res, next) {
+  const client = new MongoClient(dbConnectionUrl);
+
 	let newTicketNumber = 100;
-	mongo.connect(dbConnectionUrl, (err, client) => {
-		if (err) {
-		  console.error(err);
-		  res.send({success: false, result: 9999});
-		} else {
-			const db = client.db(dbName);
-			const collection = db.collection('orders');
+
+  async function run() {
+    try {
+      const database = client.db(dbName);
+      const collection = await database.collection('orders');
+
 			collection.find({}).count().then((n) => {
 				if (n > 0) {
 					collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
@@ -59,12 +60,12 @@ app.get('/ticketNumber', function(req, res, next) {
 					});
 					res.send({success: true, result: newTicketNumber, order: req.query});
 				}
-			}).catch((err) => {
-				console.log(err);
-				res.send({success: false, result: 999});
-			});
-		}
-	});
+      })
+    } finally {
+      await client.close()
+    }
+  }
+  run().catch(console.dir);
 });
 
 /* for debugging purposes */
