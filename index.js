@@ -114,26 +114,14 @@ app.get('/debug', function(req, res, next) {
     try {
       const database = client.db(dbName);
       const orders = database.collection('orders').find();
-      console.log(orders);
+      console.log(orders.toArray());
     } finally {
       console.log("closing");
       await client.close()
     }
   }
   run().catch(console.dir);
-	//let connection = mongo.connect(dbConnectionUrl, (err, client) => {
-  //   console.log("start")
-	//	if (err) {
-	//		console.error(err)
-	//	} else {
-	//		console.log('Connected to Mongo')
-	//		details["connected"] = true;
-	//		console.log("Updated details")
-	//	}
-	//	res.send(details);
-	//});
   console.log("ended");
-  //console.log(connection);
   res.send({end: true});
 });
 
