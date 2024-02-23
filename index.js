@@ -4,7 +4,8 @@ const app = express();
 const host = process.env.IP  || '0.0.0.0';
 console.log(host);
 const port = process.env.PORT || 8080;
-const mongo = require('mongodb').MongoClient;
+//const mongo = require('mongodb').MongoClient;
+const { MongoCilent } = require('mongodb');
 
 const mongoUri = process.env.uri;
 const mongoUsername = process.env.username || process.env.MONGODB_USER;
@@ -107,17 +108,30 @@ app.get('/debug', function(req, res, next) {
   console.log("details");
   console.log(details);
 
-	let connection = mongo.connect(dbConnectionUrl, (err, client) => {
-    console.log("start")
-		if (err) {
-			console.error(err)
-		} else {
-			console.log('Connected to Mongo')
-			details["connected"] = true;
-			console.log("Updated details")
-		}
-		res.send(details);
-	});
+  const client = new MongoCilent(dbConnectionUrl);
+
+  async function run() {
+    try {
+      const database = client.db(dbName);
+      console.log("database");
+      console.log(database);
+    } finally {
+      console.log("closing");
+      await client.close()
+    }
+  }
+  run().catch(console.dir);
+	//let connection = mongo.connect(dbConnectionUrl, (err, client) => {
+  //   console.log("start")
+	//	if (err) {
+	//		console.error(err)
+	//	} else {
+	//		console.log('Connected to Mongo')
+	//		details["connected"] = true;
+	//		console.log("Updated details")
+	//	}
+	//	res.send(details);
+	//});
   console.log("ended");
   console.log(connection);
   res.send({end: true});
