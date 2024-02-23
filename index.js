@@ -107,7 +107,7 @@ app.get('/debug', function(req, res, next) {
   console.log("details");
   console.log(details);
 
-	mongo.connect(dbConnectionUrl, (err, client) => {
+	let connection = mongo.connect(dbConnectionUrl, (err, client) => {
     console.log("start")
 		if (err) {
 			console.error(err)
@@ -119,6 +119,7 @@ app.get('/debug', function(req, res, next) {
 		res.send(details);
 	});
   console.log("ended");
+  console.log(connection);
   res.send({end: true});
 });
 
