@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const host = process.env.IP  || '0.0.0.0';
 const port = process.env.PORT || 8080;
-const mongo = require('mongodb').MongoClient;
 const { MongoClient } = require('mongodb');
 
 const mongoUri = process.env.uri;
