@@ -133,7 +133,7 @@ app.get('/debug', function(req, res, next) {
 	//	res.send(details);
 	//});
   console.log("ended");
-  console.log(connection);
+  //console.log(connection);
   res.send({end: true});
 });
 
