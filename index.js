@@ -81,52 +81,46 @@ app.get('/ticketNumber', function(req, res, next) {
 
 /* for debugging purposes */
 app.get('/allorders', function (req, res, next) {
-	var ordersList;
-
-	mongo.connect(dbConnectionUrl, (err, client) => {
-		if (err) {
-		  console.error(err)
-		  return
-		}
-		console.log(dbConnectionUrl);
-		const db = client.db(dbName);
-		const collection = db.collection('orders');
-		collection.find().toArray((err, items) => {
-			ordersList = items;
-			console.log(ordersList);
-			res.send({success: true, result: ordersList});
-		});
-	});
-});
-
-app.get('/debug', function(req, res, next) {
-  console.log("debugging");
-
+  let ordersList;
   const client = new MongoClient(dbConnectionUrl);
 
   async function run() {
     try {
       const database = client.db(dbName);
-      const orders_collection = database.collection('orders').find();
-      console.log("orders");
-      let orders = await orders_collection.toArray();
-      console.log(orders);
+      const orders = await database.collection('orders').find().toArray();
     } finally {
-      console.log("before sleeping");
-      await new Promise(resolve => setTimeout(resolve, 5000));
-      console.log("closing");
       await client.close()
     }
   }
   run().catch(console.dir);
-  console.log("ended");
-  res.send({end: true});
+  res.send({
+    success: true,
+    orders: orders});
+});
+
+app.get('/debug', function(req, res, next) {
+  const client = new MongoClient(dbConnectionUrl);
+
+  async function run() {
+    try {
+      const database = client.db(dbName);
+      const collections = database.listCollections().toArray();
+    } finally {
+      await client.close()
+    }
+  }
+  run().catch(console.dir);
+  res.send({
+		mongo_url: dbConnectionUrl,
+    collections: collections,
+	});
 });
 
 app.get('/', function(req, res, next) {
-
   console.log("received!")
-  res.send({received: true});
+  res.send({
+    received: true
+  });
 });
 
 app.use(function(err, req, res, next) {
