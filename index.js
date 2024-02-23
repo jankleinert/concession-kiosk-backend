@@ -103,10 +103,8 @@ app.get('/debug', function(req, res, next) {
 
   async function run() {
     try {
-      console.log(dbName);
       const database = client.db(dbName);
-      const collections = await database.listCollections({nameOnly: true}).toArray();
-      console.log(collections);
+      const collections = await database.listCollections().toArray();
       res.send({
         mongo_url: dbConnectionUrl,
         collections: collections,
