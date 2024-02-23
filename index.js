@@ -1,8 +1,6 @@
-console.log("starting#####");
 const express = require('express');
 const app = express();
 const host = process.env.IP  || '0.0.0.0';
-console.log(host);
 const port = process.env.PORT || 8080;
 const mongo = require('mongodb').MongoClient;
 const { MongoClient } = require('mongodb');
