@@ -105,7 +105,7 @@ app.get('/debug', function(req, res, next) {
   async function run() {
     try {
       const database = client.db(dbName);
-      collections = database.listCollections().toArray();
+      collections = await database.listCollections().toArray();
     } finally {
       await client.close()
     }
