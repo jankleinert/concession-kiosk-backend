@@ -117,6 +117,12 @@ app.get('/debug', function(req, res, next) {
 	});
 });
 
+app.get('/', function(req, res, next) {
+
+  console.log("received!")
+  res.send({received: true});
+});
+
 app.use(function(err, req, res, next) {
 	console.error(err.stack);
 	res.status(500).send('Something went wrong.')
