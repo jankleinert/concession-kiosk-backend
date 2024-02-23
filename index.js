@@ -4,7 +4,7 @@ const app = express();
 const host = process.env.IP  || '0.0.0.0';
 console.log(host);
 const port = process.env.PORT || 8080;
-//const mongo = require('mongodb').MongoClient;
+const mongo = require('mongodb').MongoClient;
 const { MongoClient } = require('mongodb');
 
 const mongoUri = process.env.uri;
@@ -105,8 +105,6 @@ app.get('/debug', function(req, res, next) {
 		"mongo_url": dbConnectionUrl,
 		"connected": false
 	};
-  console.log("details");
-  console.log(details);
 
   const client = new MongoClient(dbConnectionUrl);
 
