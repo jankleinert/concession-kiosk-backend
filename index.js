@@ -81,23 +81,21 @@ app.get('/ticketNumber', function(req, res, next) {
 
 /* for debugging purposes */
 app.get('/allorders', function (req, res, next) {
-  var orders;
   const client = new MongoClient(dbConnectionUrl);
 
   async function run() {
     try {
       const database = client.db(dbName);
-      orders = await database.collection('orders').find().toArray();
+      let orders = await database.collection('orders').find().toArray();
+      res.send({
+        success: true,
+        orders: orders,
+      });
     } finally {
       await client.close()
     }
   }
   run().catch(console.dir);
-  console.log(orders);
-  res.send({
-    success: true,
-    orders: orders,
-  });
 });
 
 app.get('/debug', function(req, res, next) {
