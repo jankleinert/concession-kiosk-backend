@@ -107,9 +107,10 @@ app.get('/debug', function(req, res, next) {
   async function run() {
     try {
       const database = client.db(dbName);
-      const orders = database.collection('orders').find();
+      const orders_collection = database.collection('orders').find();
       console.log("orders");
-      console.log(orders.toArray());
+      let orders = await orders_collection.toArray();
+      console.log(orders);
     } finally {
       console.log("before sleeping");
       await new Promise(resolve => setTimeout(resolve, 5000));
