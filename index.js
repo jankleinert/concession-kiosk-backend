@@ -113,8 +113,8 @@ app.get('/debug', function(req, res, next) {
   async function run() {
     try {
       const database = client.db(dbName);
-      console.log("database");
-      console.log(database);
+      const orders = database.collection('orders').find();
+      console.log(orders);
     } finally {
       console.log("closing");
       await client.close()
