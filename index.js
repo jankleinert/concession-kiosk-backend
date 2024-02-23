@@ -99,7 +99,7 @@ app.get('/allorders', function (req, res, next) {
 });
 
 app.get('/debug', function(req, res, next) {
-  let collections = [];
+  var collections = [];
   const client = new MongoClient(dbConnectionUrl);
 
   async function run() {
