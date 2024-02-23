@@ -101,10 +101,6 @@ app.get('/allorders', function (req, res, next) {
 
 app.get('/debug', function(req, res, next) {
   console.log("debugging");
-	var details = {
-		"mongo_url": dbConnectionUrl,
-		"connected": false
-	};
 
   const client = new MongoClient(dbConnectionUrl);
 
@@ -112,8 +108,11 @@ app.get('/debug', function(req, res, next) {
     try {
       const database = client.db(dbName);
       const orders = database.collection('orders').find();
+      console.log("orders");
       console.log(orders.toArray());
     } finally {
+      console.log("before sleeping");
+      await sleep(3000);
       console.log("closing");
       await client.close()
     }
