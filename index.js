@@ -112,7 +112,7 @@ app.get('/debug', function(req, res, next) {
       console.log(orders.toArray());
     } finally {
       console.log("before sleeping");
-      await sleep(3000);
+      await new Promise(resolve => setTimeout(resolve, 5000));
       console.log("closing");
       await client.close()
     }
