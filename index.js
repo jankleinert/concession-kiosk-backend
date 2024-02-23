@@ -99,12 +99,13 @@ app.get('/allorders', function (req, res, next) {
 });
 
 app.get('/debug', function(req, res, next) {
+  let collections = [];
   const client = new MongoClient(dbConnectionUrl);
 
   async function run() {
     try {
       const database = client.db(dbName);
-      const collections = database.listCollections().toArray();
+      collections = database.listCollections().toArray();
     } finally {
       await client.close()
     }
