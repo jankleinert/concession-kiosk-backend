@@ -81,7 +81,7 @@ app.get('/ticketNumber', function(req, res, next) {
 
 /* for debugging purposes */
 app.get('/allorders', function (req, res, next) {
-  let orders;
+  var orders;
   const client = new MongoClient(dbConnectionUrl);
 
   async function run() {
@@ -93,9 +93,11 @@ app.get('/allorders', function (req, res, next) {
     }
   }
   run().catch(console.dir);
+  console.log(orders);
   res.send({
     success: true,
-    orders: orders});
+    orders: orders,
+  });
 });
 
 app.get('/debug', function(req, res, next) {
@@ -113,6 +115,7 @@ app.get('/debug', function(req, res, next) {
     }
   }
   run().catch(console.dir);
+  console.log(collections);
   res.send({
 		mongo_url: dbConnectionUrl,
     collections: collections,
