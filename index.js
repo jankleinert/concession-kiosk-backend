@@ -5,7 +5,7 @@ const host = process.env.IP  || '0.0.0.0';
 console.log(host);
 const port = process.env.PORT || 8080;
 //const mongo = require('mongodb').MongoClient;
-const { MongoCilent } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 const mongoUri = process.env.uri;
 const mongoUsername = process.env.username || process.env.MONGODB_USER;
@@ -108,7 +108,7 @@ app.get('/debug', function(req, res, next) {
   console.log("details");
   console.log(details);
 
-  const client = new MongoCilent(dbConnectionUrl);
+  const client = new MongoClient(dbConnectionUrl);
 
   async function run() {
     try {
