@@ -99,11 +99,13 @@ app.get('/allorders', function (req, res, next) {
 });
 
 app.get('/debug', function(req, res, next) {
-
+  console.log("debugging");
 	var details = {
 		"mongo_url": dbConnectionUrl,
 		"connected": false
 	};
+  console.log("details");
+  console.log(details);
 
 	mongo.connect(dbConnectionUrl, (err, client) => {
 		if (err) {
