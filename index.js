@@ -43,24 +43,25 @@ app.get('/ticketNumber', function(req, res, next) {
 
 			await collection.find({}).count().then((n) => {
         console.log(n);
+				if (n > 0) {
+					collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
+            console.log(items)
+					});
+					//collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
+					//	let highestTicket = items[0].ticketNumber;
+					//	newTicketNumber = highestTicket + 1;
+					//	collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
+					//		console.log('err:' + err, ' result: ' + result);
+					//	});
+					//	res.send({success: true, result: newTicketNumber, order: req.query});
+					//});
+				} else {
+					//collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
+					//	console.log('err:' + err, ' result: ' + result);
+					//});
+					//res.send({success: true, result: newTicketNumber, order: req.query});
+				}
       });
-			//await collection.find({}).count().then((n) => {
-			//	if (n > 0) {
-			//		collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
-			//			let highestTicket = items[0].ticketNumber;
-			//			newTicketNumber = highestTicket + 1;
-			//			collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
-			//				console.log('err:' + err, ' result: ' + result);
-			//			});
-			//			res.send({success: true, result: newTicketNumber, order: req.query});
-			//		});
-			//	} else {
-			//		collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
-			//			console.log('err:' + err, ' result: ' + result);
-			//		});
-			//		res.send({success: true, result: newTicketNumber, order: req.query});
-			//	}
-      //})
     } finally {
       await client.close()
     }
