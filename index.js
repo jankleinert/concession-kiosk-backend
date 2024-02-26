@@ -48,9 +48,9 @@ app.get('/ticketNumber', function(req, res, next) {
 			if (count > 0) {
         console.log("count > 0");
 				//collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
-				await collection.find().toArray((err, items) => {
-          console.log(items)
-				});
+				let orders = await collection.find().toArray();
+        console.log("orders");
+        console.log(orders);
 				//collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
 				//	let highestTicket = items[0].ticketNumber;
 				//	newTicketNumber = highestTicket + 1;
