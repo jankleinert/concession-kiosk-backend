@@ -52,10 +52,13 @@ app.get('/ticketNumber', function(req, res, next) {
         console.log(orders);
         let highestTicket = orders[0].ticketNumber;
 				newTicketNumber = highestTicket + 1;
-				await collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
-          console.log("is this used?");
-				  console.log('err:' + err, ' result: ' + result);
-				});
+        try {
+          await collection.insertOne({ticketNumber: newTicketNumber, order: req.query});
+        } catch (error) {
+          console.log("error");
+          console.log(error);
+          print (error);
+        }
 				res.send({success: true, result: newTicketNumber, order: req.query});
 			} else {
 				await collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
