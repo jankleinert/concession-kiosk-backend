@@ -41,9 +41,11 @@ app.get('/ticketNumber', function(req, res, next) {
       const database = client.db(dbName);
       const collection = await database.collection('orders');
 
-			//await collection.find({}).count().then((n) => {
-			await collection.find({}).then((n) => {
-        console.log(".find({})");
+			let count = await collection.count();
+      console.log("count");
+      console.log(count);
+			await collection.find({}).count().then((n) => {
+        console.log(".find({}).count()");
         console.log(n);
 				if (n > 0) {
           console.log("n > 0");
