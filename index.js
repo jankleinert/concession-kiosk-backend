@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const host = process.env.IP  || '0.0.0.0';
 const port = process.env.PORT || 8080;
-const mongo = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
 
 const mongoUri = process.env.uri;
 const mongoUsername = process.env.username || process.env.MONGODB_USER;
@@ -32,75 +32,91 @@ else if (process.env.MONGODB_URL){
 }
 
 app.get('/ticketNumber', function(req, res, next) {
-	let newTicketNumber = 100;
-	mongo.connect(dbConnectionUrl, (err, client) => {
-		if (err) {
-		  console.error(err);
-		  res.send({success: false, result: 9999});
-		} else {
-			const db = client.db(dbName);
-			const collection = db.collection('orders');
-			collection.find({}).count().then((n) => {
-				if (n > 0) {
-					collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
-						let highestTicket = items[0].ticketNumber;
-						newTicketNumber = highestTicket + 1;
-						collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
-							console.log('err:' + err, ' result: ' + result);
-						});
-						res.send({success: true, result: newTicketNumber, order: req.query});
-					});
-				} else {
-					collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
-						console.log('err:' + err, ' result: ' + result);
-					});
-					res.send({success: true, result: newTicketNumber, order: req.query});
-				}
-			}).catch((err) => {
-				console.log(err);
-				res.send({success: false, result: 999});
-			});
-		}
-	});
+  const arbitraryStartOfTicketNumbers = 100;
+  const client = new MongoClient(dbConnectionUrl);
+	let newTicketNumber = arbitraryStartOfTicketNumbers;
+
+  async function run() {
+    try {
+      const database = client.db(dbName);
+      const collection = await database.collection('orders');
+			let count = await collection.count();
+
+			if (count > 0) { // all subsequent tickets
+        const reverseOrderKey = -1;
+        const firstTicketIndex = 0;
+        const nextTicketIncrement = 1;
+				let orders = await collection.find().sort({ticketNumber: reverseOrderKey}).toArray();
+        let highestTicket = orders[firstTicketIndex].ticketNumber;
+
+				newTicketNumber = highestTicket + nextTicketIncrement;
+        try {
+          await collection.insertOne({ticketNumber: newTicketNumber, order: req.query});
+        } catch (error) {
+          console.log(error);
+        }
+				res.send({success: true, result: newTicketNumber, order: req.query});
+			} else { // when first ticket
+        try {
+          await collection.insertOne({ticketNumber: newTicketNumber, order: req.query});
+        } catch (error) {
+          console.log(error);
+        }
+				res.send({success: true, result: newTicketNumber, order: req.query});
+			}
+    } finally {
+      await client.close()
+    }
+  }
+  run().catch(console.dir);
 });
 
-/* for debugging purposes */
-app.get('/allorders', function (req, res, next) {
-	var ordersList;
+/* The following routes are for debugging purposes */
 
-	mongo.connect(dbConnectionUrl, (err, client) => {
-		if (err) {
-		  console.error(err)
-		  return
-		}
-		console.log(dbConnectionUrl);
-		const db = client.db(dbName);
-		const collection = db.collection('orders');
-		collection.find().toArray((err, items) => {
-			ordersList = items;
-			console.log(ordersList);
-			res.send({success: true, result: ordersList});
-		});
-	});
+// test if application is listening properly
+app.get('/', function(req, res, next) {
+  console.log("received!")
+  res.send({
+    received: true
+  });
 });
 
+// test if database connection and collection are working properly
 app.get('/debug', function(req, res, next) {
+  const client = new MongoClient(dbConnectionUrl);
 
-	var details = {
-		"mongo_url": dbConnectionUrl,
-		"connected": false
-	};
+  async function run() {
+    try {
+      const database = client.db(dbName);
+      const collections = await database.listCollections().toArray();
+      res.send({
+        mongo_url: dbConnectionUrl,
+        collections: collections,
+      });
+    } finally {
+      await client.close()
+    }
+  }
+  run().catch(console.dir);
+});
 
-	mongo.connect(dbConnectionUrl, (err, client) => {
-		if (err) {
-			console.error(err)
-		} else {
-			console.log('Connected to Mongo')
-			details["connected"] = true;
-			console.log("Updated details")
-		}
-		res.send(details);
-	});
+// test if orders can be read from database properly
+app.get('/allorders', function (req, res, next) {
+  const client = new MongoClient(dbConnectionUrl);
+
+  async function run() {
+    try {
+      const database = client.db(dbName);
+      let orders = await database.collection('orders').find().toArray();
+      res.send({
+        success: true,
+        orders: orders,
+      });
+    } finally {
+      await client.close()
+    }
+  }
+  run().catch(console.dir);
 });
 
 app.use(function(err, req, res, next) {
