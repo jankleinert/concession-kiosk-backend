@@ -58,10 +58,11 @@ app.get('/ticketNumber', function(req, res, next) {
 				});
 				res.send({success: true, result: newTicketNumber, order: req.query});
 			} else {
-				//collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
-				//	console.log('err:' + err, ' result: ' + result);
-				//});
-				//res.send({success: true, result: newTicketNumber, order: req.query});
+				await collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
+          console.log("inserting first one");
+					console.log('err:' + err, ' result: ' + result);
+				});
+				res.send({success: true, result: newTicketNumber, order: req.query});
 			}
     } finally {
       await client.close()
