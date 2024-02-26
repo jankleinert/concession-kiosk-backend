@@ -45,8 +45,8 @@ app.get('/ticketNumber', function(req, res, next) {
       console.log("count");
       console.log(count);
 
-			if (n > 0) {
-        console.log("n > 0");
+			if (count > 0) {
+        console.log("count > 0");
 				//collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
 				collection.find().toArray((err, items) => {
           console.log(items)
