@@ -42,16 +42,12 @@ app.get('/ticketNumber', function(req, res, next) {
       const collection = await database.collection('orders');
 
 			let count = await collection.count();
-      console.log("count");
-      console.log(count);
 
 			if (count > 0) {
-        console.log("count > 0");
 				let orders = await collection.find().sort({ticketNumber: -1}).toArray();
-        console.log("orders");
-        console.log(orders);
         let highestTicket = orders[0].ticketNumber;
 				newTicketNumber = highestTicket + 1;
+
         try {
           console.log("inserting real");
           await collection.insertOne({ticketNumber: newTicketNumber, order: req.query});
