@@ -62,7 +62,6 @@ app.get('/ticketNumber', function(req, res, next) {
         } catch (error) {
           console.log("error");
           console.log(error);
-          print (error);
         }
 				res.send({success: true, result: newTicketNumber, order: req.query});
 			} else {
