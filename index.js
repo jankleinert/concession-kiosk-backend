@@ -53,18 +53,10 @@ app.get('/ticketNumber', function(req, res, next) {
         let highestTicket = orders[0].ticketNumber;
 				newTicketNumber = highestTicket + 1;
 				await collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
+          console.log("is this used?");
 				  console.log('err:' + err, ' result: ' + result);
 				});
 				res.send({success: true, result: newTicketNumber, order: req.query});
-
-				//collection.find().sort({ticketNumber:-1}).limit(1).toArray((err, items) => {
-				//	let highestTicket = items[0].ticketNumber;
-				//	newTicketNumber = highestTicket + 1;
-				//	collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
-				//		console.log('err:' + err, ' result: ' + result);
-				//	});
-				//	res.send({success: true, result: newTicketNumber, order: req.query});
-				//});
 			} else {
 				//collection.insertOne({ticketNumber: newTicketNumber, order: req.query}, (err, result) => {
 				//	console.log('err:' + err, ' result: ' + result);
