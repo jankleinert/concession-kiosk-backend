@@ -53,7 +53,12 @@ app.get('/ticketNumber', function(req, res, next) {
         let highestTicket = orders[0].ticketNumber;
 				newTicketNumber = highestTicket + 1;
         try {
+          console.log("inserting real");
           await collection.insertOne({ticketNumber: newTicketNumber, order: req.query});
+          console.log("inserting fake");
+          await collection.insertOne({ _id: 1 });
+          console.log("inserting fake again");
+          await collection.insertOne({ _id: 1 });
         } catch (error) {
           console.log("error");
           console.log(error);
